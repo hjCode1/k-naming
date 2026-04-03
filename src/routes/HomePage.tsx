@@ -24,7 +24,7 @@ function HomePage() {
 
       {/* 안내 */}
       <p className="text-center text-xs text-charcoal/35 mt-6">
-        입력된 정보는 서버에 저장되지 않으며, 브라우저에서만 처리됩니다.
+        입력된 정보는 서버에 저장되지 않으며, 브라우저에서만 처리됩니다..
       </p>
     </div>
   );

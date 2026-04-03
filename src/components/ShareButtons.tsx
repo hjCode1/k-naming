@@ -1,52 +1,31 @@
 import { useState, type RefObject } from 'react';
-import type { BirthInput } from '../types';
-import { encodeToURL, exportNameCard, copyToClipboard } from '../lib/share';
+import { exportNameCard } from '../lib/share';
 
 interface ShareButtonsProps {
-  input: BirthInput;
-  name1Hanja?: string;
-  name2Hanja?: string;
   cardRef: RefObject<HTMLDivElement | null>;
 }
 
-function ShareButtons({ input, name1Hanja, name2Hanja, cardRef }: ShareButtonsProps) {
-  const [copied, setCopied] = useState(false);
+function ShareButtons({ cardRef }: ShareButtonsProps) {
   const [exporting, setExporting] = useState(false);
 
-  const handleCopyLink = async () => {
-    const url = encodeToURL(input, name1Hanja, name2Hanja);
-    const ok = await copyToClipboard(url);
-    if (ok) {
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    }
-  };
-
   const handleExportImage = async () => {
-    if (!cardRef.current) return;
+    if (!cardRef.current || exporting) return;
     setExporting(true);
     try {
       await exportNameCard(cardRef.current);
+    } catch (err) {
+      console.error('Image export failed:', err);
     } finally {
       setExporting(false);
     }
   };
 
-  const btnClass =
-    'flex-1 py-2.5 px-4 rounded-xl text-sm font-medium transition-all active:scale-[0.97]';
-
   return (
-    <div className="flex gap-3">
-      <button
-        onClick={handleCopyLink}
-        className={`${btnClass} bg-charcoal/5 text-charcoal hover:bg-charcoal/10`}
-      >
-        {copied ? '복사됨!' : '링크 복사'}
-      </button>
+    <div className="flex justify-center">
       <button
         onClick={handleExportImage}
-        disabled={!cardRef.current || exporting}
-        className={`${btnClass} bg-rose text-white hover:bg-rose/90 disabled:opacity-50`}
+        className="w-full max-w-sm py-2.5 px-4 rounded-xl text-sm font-semibold transition-all active:scale-[0.97]
+                   bg-[#8B6914] text-white hover:bg-[#7A5C10] shadow-md"
       >
         {exporting ? '저장 중...' : '이미지 저장'}
       </button>

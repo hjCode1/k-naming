@@ -142,7 +142,7 @@ function ResultPage() {
               K-Naming · 우리 아이 이름 짓기
             </div>
           </div>
-          <ShareButtons input={input} cardRef={cardRef} />
+          <ShareButtons cardRef={cardRef} />
         </section>
       )}
 

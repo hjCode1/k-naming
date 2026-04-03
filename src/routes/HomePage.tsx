@@ -1,4 +1,4 @@
-import InputForm from '../components/InputForm';
+import InputForm from "../components/InputForm";
 
 function HomePage() {
   return (
@@ -12,8 +12,7 @@ function HomePage() {
             우리 아이 이름 짓기
           </h1>
           <p className="text-charcoal/55 text-base">
-            사주와 오행을 분석하여<br className="md:hidden" />
-            아이에게 딱 맞는 이름을 찾아보세요
+            사주와 오행을 분석하여 아이에게 딱 맞는 이름을 찾아보세요
           </p>
         </div>
       </div>

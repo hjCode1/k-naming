@@ -1,6 +1,23 @@
 import { useState, useCallback, useRef } from 'react';
 import type { SajuResult, AiNameRecommendation, Gender } from '../types';
 
+const CACHE_KEY_PREFIX = 'k-naming-ai-';
+
+function getCached(key: string): AiNameRecommendation[] | null {
+  try {
+    const data = sessionStorage.getItem(CACHE_KEY_PREFIX + key);
+    return data ? JSON.parse(data) : null;
+  } catch {
+    return null;
+  }
+}
+
+function setCache(key: string, names: AiNameRecommendation[]) {
+  try {
+    sessionStorage.setItem(CACHE_KEY_PREFIX + key, JSON.stringify(names));
+  } catch { /* quota exceeded 등 무시 */ }
+}
+
 interface UseAiRecommendReturn {
   names: AiNameRecommendation[];
   isLoading: boolean;
@@ -12,15 +29,21 @@ export function useAiRecommend(): UseAiRecommendReturn {
   const [names, setNames] = useState<AiNameRecommendation[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const cacheKeyRef = useRef<string>('');
   const fetchingRef = useRef(false);
 
   const fetchRecommendations = useCallback(
     async (surname: string, sajuResult: SajuResult, gender: Gender) => {
       const key = `${surname}-${sajuResult.dayMaster}-${sajuResult.deficientElements.join(',')}-${gender}`;
 
-      // 동일 요청 캐시 또는 이미 요청 중이면 스킵
-      if (key === cacheKeyRef.current || fetchingRef.current) return;
+      // sessionStorage 캐시 확인
+      const cached = getCached(key);
+      if (cached) {
+        setNames(cached);
+        return;
+      }
+
+      // 이미 요청 중이면 스킵
+      if (fetchingRef.current) return;
 
       fetchingRef.current = true;
       setIsLoading(true);
@@ -45,8 +68,9 @@ export function useAiRecommend(): UseAiRecommendReturn {
         }
 
         const data = await res.json();
-        setNames(data.names ?? []);
-        cacheKeyRef.current = key;
+        const result = data.names ?? [];
+        setNames(result);
+        setCache(key, result);
       } catch (err) {
         setError(err instanceof Error ? err.message : '알 수 없는 오류가 발생했습니다');
       } finally {

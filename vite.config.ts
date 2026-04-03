@@ -115,7 +115,6 @@ export default defineConfig({
       output: {
         manualChunks: {
           'lunar': ['lunar-typescript'],
-          'hanja-data': ['./src/data/hanja.json'],
         },
       },
     },

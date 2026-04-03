@@ -179,8 +179,8 @@ function InputForm() {
       {/* 제출 */}
       <button
         type="submit"
-        className="w-full py-3 rounded-xl bg-rose text-white font-medium text-lg
-                   hover:bg-rose/90 active:scale-[0.98] transition-all shadow-sm"
+        className="w-full py-3 rounded-xl bg-[#8B6914] text-white font-semibold text-lg
+                   hover:bg-[#7A5C10] active:scale-[0.98] transition-all shadow-md"
       >
         이름 분석 시작
       </button>
